@@ -3,11 +3,13 @@ from helpers import helper_functions as hf
 
 
 def day_1_1(input_data):
+    input_data = input_data.squeeze()
     elf_inventories = input_data.groupby(input_data.isna().cumsum()).sum()
     return int(elf_inventories.max())
 
 
 def day_1_2(input_data):
+    input_data = input_data.squeeze()
     elf_inventories = input_data.groupby(input_data.isna().cumsum()).sum()
     return int(elf_inventories.nlargest(3).sum())
 
@@ -24,7 +26,7 @@ def day_2_1(instructions):
                                    'C Z': 6}
                                   )
 
-    return scores.sum()
+    return scores.sum()[0]
 
 
 def day_2_2(instructions):
@@ -39,5 +41,14 @@ def day_2_2(instructions):
                                    'C Z': 7}
                                   )
 
-    return scores.sum()
+    return scores.sum()[0]
+
+
+def day_3_1(data):
+    data.rename(columns={0: "pack"}, inplace=True)
+    data["comp1"] = data.apply(lambda row: row.pack[:len(row.pack) // 2], axis=1)
+    data["comp2"] = data.apply(lambda row: row.pack[len(row.pack) // 2:], axis=1)
+    data["shared"] = data.apply(lambda row: set(row.comp1).intersection(set(row.comp2)).pop(), axis=1)
+
+    return data["shared"][1]
 
