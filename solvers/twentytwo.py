@@ -56,11 +56,12 @@ def day_3_1(data):
 
 def day_3_2(data):
     data.rename(columns={0: "pack"}, inplace=True)
+    g = data.groupby(data.index // 3)
     groups = pd.DataFrame({
-        "pack0": (data.iloc[::3, 0]).reset_index(drop=True),
-        "pack1": (data.iloc[1::3, 0]).reset_index(drop=True),
-        "pack2": (data.iloc[2::3, 0]).reset_index(drop=True)}
-    )
+        "pack0": g.nth(0)["pack"],
+        "pack1": g.nth(1)["pack"],
+        "pack2": g.nth(2)["pack"]
+    })
     groups["badge"] = groups.apply(lambda row: set(row.pack0).intersection(row.pack1, row.pack2).pop(), axis=1)
     groups["priority"] = groups.apply(lambda row: ord(row.badge) - 38 if row.badge.isupper() else ord(row.badge) - 96, axis=1)
 
