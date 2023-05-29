@@ -66,3 +66,13 @@ def day_3_2(data):
     groups["priority"] = groups.apply(lambda row: ord(row.badge) - 38 if row.badge.isupper() else ord(row.badge) - 96, axis=1)
 
     return groups.priority.sum()
+
+
+def day_4_1(data):
+    data.rename(columns={0: "elf_1_start", 1: "elf_1_end", 2: "elf_2_start", 3: "elf_2_end"}, inplace=True)
+    return data.query('(elf_1_start <= elf_2_start and elf_1_end >= elf_2_end) or (elf_2_start <= elf_1_start and elf_2_end >= elf_1_end)').elf_1_start.count()
+
+
+def day_4_2(data):
+    data.rename(columns={0: "elf_1_start", 1: "elf_1_end", 2: "elf_2_start", 3: "elf_2_end"}, inplace=True)
+    return data.query('(elf_1_start <= elf_2_start <= elf_1_end) or (elf_1_start <= elf_2_end <= elf_1_end) or (elf_2_start <= elf_1_start <= elf_2_end) or (elf_2_start <= elf_1_end <= elf_2_end)').elf_1_start.count()
