@@ -76,3 +76,45 @@ def day_4_1(data):
 def day_4_2(data):
     data.rename(columns={0: "elf_1_start", 1: "elf_1_end", 2: "elf_2_start", 3: "elf_2_end"}, inplace=True)
     return data.query('(elf_1_start <= elf_2_start <= elf_1_end) or (elf_1_start <= elf_2_end <= elf_1_end) or (elf_2_start <= elf_1_start <= elf_2_end) or (elf_2_start <= elf_1_end <= elf_2_end)').elf_1_start.count()
+
+
+def day_5_1(starting_state, instructions):
+    boxes_state, instructions = day_5_prepare(starting_state, instructions)
+
+    for instruction in instructions.iterrows():
+        for i in range(instruction[1]['boxes_count']):
+            boxes_state[instruction[1]['to_stack']].append(boxes_state[instruction[1]['from_stack']].pop())
+
+    solution = ''
+    for i in range(1, 10):
+        solution += boxes_state[i].pop()
+    return solution
+
+
+def day_5_2(starting_state, instructions):
+    boxes_state, instructions = day_5_prepare(starting_state, instructions)
+
+    for instruction in instructions.iterrows():
+        box_count = instruction[1]['boxes_count']
+        boxes_state[instruction[1]['to_stack']].extend(boxes_state[instruction[1]['from_stack']][-box_count:])
+        del boxes_state[instruction[1]['from_stack']][-box_count:]
+
+    solution = ''
+    for i in range(1, 10):
+        solution += boxes_state[i].pop()
+    return solution
+
+
+def day_5_prepare(starting_state, instructions):
+    boxes_state = {1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: []}
+    for line in reversed(starting_state):
+        step = 1
+        for box in line[1::4]:
+            if box != ' ':
+                boxes_state[step].append(box)
+            step += 1
+
+    instructions.drop(columns=[0, 2, 4], inplace=True)
+    instructions.rename(columns={1: 'boxes_count', 3: 'from_stack', 5: 'to_stack'}, inplace=True)
+
+    return boxes_state, instructions
