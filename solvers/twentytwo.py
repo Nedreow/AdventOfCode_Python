@@ -1,5 +1,6 @@
 import pandas as pd
 from helpers import helper_functions as hf
+from more_itertools import windowed
 
 
 def day_1_1(input_data):
@@ -118,3 +119,15 @@ def day_5_prepare(starting_state, instructions):
     instructions.rename(columns={1: 'boxes_count', 3: 'from_stack', 5: 'to_stack'}, inplace=True)
 
     return boxes_state, instructions
+
+
+def day_6_1(data):
+    for window in windowed(data, 4):
+        if len(set(window)) == 4:
+            return data.find(''.join(window)) + 4
+
+
+def day_6_2(data):
+    for window in windowed(data, 14):
+        if len(set(window)) == 14:
+            return data.find(''.join(window)) + 14
